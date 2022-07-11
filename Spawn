@@ -2,23 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnEnemyes : MonoBehaviour
+public class SpawnEnemyes : ObjectPool
 {
-    [SerializeField] private GameObject[] _enemyes;
-    [SerializeField] private Transform[] _spawnPoints;
+    [SerializeField] private GameObject _monsters;
+    [SerializeField] private List<Transform> _spawnPoints;
+    private GameObject monster;
+
+    //private List<GameObject> _monsters = new List<GameObject>(); 
     private int _randomEnemy;
     private int _randomPosition;
     private float _spawnRate = 2f;
-    private float _nextSpawn = 0.0f;    
+    private float _elapsedTime = 0.0f;
+
+    private void Start()
+    {
+        Initialize(_monsters);
+    }
 
     private void Update()
     {
-        if (Time.time > _nextSpawn)
+        _elapsedTime += Time.deltaTime;
+
+        if (_elapsedTime >= _spawnRate)
         {
-            _nextSpawn = Time.time + _spawnRate;
-            _randomEnemy = Random.Range(0, _enemyes.Length);
-            _randomPosition = Random.Range(0, _spawnPoints.Length);            
-            Instantiate(_enemyes[_randomEnemy], _spawnPoints[_randomPosition].position, Quaternion.identity);           
-        }        
-    }    
+            if (TryGetObject(out GameObject monster))
+            {
+                _elapsedTime = 0;
+
+                if (_spawnPoints.Count > 0)
+                {
+                    _randomPosition = Random.Range(0, _spawnPoints.Count);
+                    SetMonster(monster, _spawnPoints[_randomPosition].position);
+                    _spawnPoints.RemoveAt(_randomPosition);
+                }
+            }
+        }                
+    }
+        
+    private void SetMonster(GameObject monster, Vector3 spawnPoint)
+    {
+        monster.SetActive(true);
+        monster.transform.position = spawnPoint;
+    }  
+    
+    //private GameObject GetMonster()
+    //{
+    //    _randomEnemy = Random.Range(0, _monsters.Length);
+    //    monster = _randomEnemy[];
+    //    for (int i = 0; i < _monsters.Length; i++)
+    //    {
+
+    //    }
+    //}
 }
