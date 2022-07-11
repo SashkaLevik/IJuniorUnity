@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnEnemyes : MonoBehaviour
+{
+    [SerializeField] private GameObject[] _enemyes;
+    [SerializeField] private Transform[] _spawnPoints;
+    private int _randomEnemy;
+    private int _randomPosition;
+    private float _spawnRate = 2f;
+    private float _nextSpawn = 0.0f;    
+
+    private void Update()
+    {
+        if (Time.time > _nextSpawn)
+        {
+            _nextSpawn = Time.time + _spawnRate;
+            _randomEnemy = Random.Range(0, _enemyes.Length);
+            _randomPosition = Random.Range(0, _spawnPoints.Length);            
+            Instantiate(_enemyes[_randomEnemy], _spawnPoints[_randomPosition].position, Quaternion.identity);           
+        }        
+    }    
+}
