@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 
 public class SpawnEnemyes : ObjectPool
 {
-    [SerializeField] private GameObject _monsters;
+    [SerializeField] public Monster[] _monsters;
     [SerializeField] private List<Transform> _spawnPoints;
-    private GameObject monster;
-
-    //private List<GameObject> _monsters = new List<GameObject>(); 
-    private int _randomEnemy;
+    
     private int _randomPosition;
     private float _spawnRate = 2f;
     private float _elapsedTime = 0.0f;
@@ -20,6 +19,11 @@ public class SpawnEnemyes : ObjectPool
     }
 
     private void Update()
+    {
+        StartCoroutine(Spawn());                        
+    }    
+
+    private IEnumerator Spawn()
     {
         _elapsedTime += Time.deltaTime;
 
@@ -36,22 +40,13 @@ public class SpawnEnemyes : ObjectPool
                     _spawnPoints.RemoveAt(_randomPosition);
                 }
             }
-        }                
+        }
+        yield return null;
     }
-        
+
     private void SetMonster(GameObject monster, Vector3 spawnPoint)
     {
         monster.SetActive(true);
         monster.transform.position = spawnPoint;
-    }  
-    
-    //private GameObject GetMonster()
-    //{
-    //    _randomEnemy = Random.Range(0, _monsters.Length);
-    //    monster = _randomEnemy[];
-    //    for (int i = 0; i < _monsters.Length; i++)
-    //    {
-
-    //    }
-    //}
+    }          
 }
