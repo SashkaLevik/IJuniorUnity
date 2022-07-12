@@ -8,23 +8,27 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private GameObject _container;
     [SerializeField] private int _capacity;
 
+    private Monster[] _spawn;
     private List<GameObject> _pool = new List<GameObject>();
-    //если я правильно понимаю, мне нужно что бы в этом методе объекты брались из массива
-    
-    protected void Initialize(GameObject prefab)
+
+    private void Start()
+    {
+        _spawn = GetComponent<Monster[]>();
+    }
+
+    protected void Initialize(Monster[] monsters)
     {
         for (int i = 0; i < _capacity; i++)
         {
-            GameObject spawned = Instantiate(prefab, _container.transform);
-            spawned.SetActive(false);
-
-            _pool.Add(spawned);
+            Monster spawned = Instantiate(monsters[Random.Range(0, monsters.Length)], _container.transform);
+            spawned.gameObject.SetActive(false);
+            _pool.Add(spawned.gameObject);
         }
-    }
+    }    
 
     protected bool TryGetObject(out GameObject result)
     {
-        result = _pool.First(obj => obj.activeSelf == false);
+        result = _pool[Random.Range(0, _pool.Count - 1)];
 
         return result != null;
     }
