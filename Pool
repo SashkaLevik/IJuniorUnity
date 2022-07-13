@@ -8,13 +8,7 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private GameObject _container;
     [SerializeField] private int _capacity;
 
-    private Monster[] _spawn;
-    private List<GameObject> _pool = new List<GameObject>();
-
-    private void Start()
-    {
-        _spawn = GetComponent<Monster[]>();
-    }
+    private List<Monster> _pool = new List<Monster>();    
 
     protected void Initialize(Monster[] monsters)
     {
@@ -22,14 +16,14 @@ public class ObjectPool : MonoBehaviour
         {
             Monster spawned = Instantiate(monsters[Random.Range(0, monsters.Length)], _container.transform);
             spawned.gameObject.SetActive(false);
-            _pool.Add(spawned.gameObject);
+            _pool.Add(spawned);
         }
     }    
 
-    protected bool TryGetObject(out GameObject result)
+    protected bool TryGetObject(out Monster result)
     {
-        result = _pool[Random.Range(0, _pool.Count - 1)];
+        result = _pool[Random.Range(0, _pool.Count)];
 
-        return result != null;
+        return result;
     }
 }
