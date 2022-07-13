@@ -10,8 +10,6 @@ public class SpawnEnemyes : ObjectPool
     [SerializeField] private List<Transform> _spawnPoints;
     
     private int _randomPosition;
-    private float _spawnRate = 2f;
-    private float _elapsedTime = 0.0f;
 
     private void Start()
     {
@@ -25,28 +23,23 @@ public class SpawnEnemyes : ObjectPool
 
     private IEnumerator Spawn()
     {
-        _elapsedTime += Time.deltaTime;
+        var waitTwoSeconds = new WaitForSeconds(2F);
 
-        if (_elapsedTime >= _spawnRate)
+        if (TryGetObject(out Monster monster))
         {
-            if (TryGetObject(out GameObject monster))
+            if (_spawnPoints.Count > 0)
             {
-                _elapsedTime = 0;
-
-                if (_spawnPoints.Count > 0)
-                {
-                    _randomPosition = Random.Range(0, _spawnPoints.Count);
-                    SetMonster(monster, _spawnPoints[_randomPosition].position);
-                    _spawnPoints.RemoveAt(_randomPosition);
-                }
+                _randomPosition = Random.Range(0, _spawnPoints.Count);
+                SetMonster(monster, _spawnPoints[_randomPosition].position);
+                _spawnPoints.RemoveAt(_randomPosition);
             }
+            yield return waitTwoSeconds;
         }
-        yield return null;
     }
 
-    private void SetMonster(GameObject monster, Vector3 spawnPoint)
+    private void SetMonster(Monster monster, Vector3 spawnPoint)
     {
-        monster.SetActive(true);
+        monster.gameObject.SetActive(true);
         monster.transform.position = spawnPoint;
     }          
 }
