@@ -1,0 +1,52 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class Player : MonoBehaviour
+{
+    [SerializeField] private HealthBar _healthBar;
+    
+
+    private float _maxHealth = 100;
+    private float _currentHealth;
+
+    private void Start()
+    {
+        _currentHealth = _maxHealth;
+        _healthBar.SetMaxHealth(_maxHealth);
+    }
+
+    public void OnButtonHurt()
+    {
+        StartCoroutine(ApplyDamage(20));
+    }
+
+    public void OnButtonHeal()
+    {
+        StartCoroutine(ApplyHeal(20));
+    }
+
+    private IEnumerator ApplyDamage(float damage)
+    {        
+        if (_currentHealth > 0)
+        {
+            _currentHealth -= damage;
+            _healthBar._slider.value = Mathf.Lerp(_maxHealth, _currentHealth, damage);
+            _healthBar.SetHealth(_currentHealth);
+            yield return null;
+        }        
+    }
+
+    private IEnumerator ApplyHeal(int heal)
+    {
+        if (_currentHealth < _maxHealth)
+        {
+            _currentHealth += heal;
+            _healthBar._slider.value = Mathf.Lerp(_maxHealth, _currentHealth, heal);
+            _healthBar.SetHealth(_currentHealth);
+            yield return null;
+        }
+        
+    }
+}
