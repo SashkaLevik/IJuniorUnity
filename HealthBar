@@ -6,16 +6,43 @@ using UnityEngine.Events;
 
 public class HealthBar : MonoBehaviour
 {
-    public Slider _slider;
+    [SerializeField] private Slider _slider;
+    [SerializeField] private Player _player;
 
-    public void SetMaxHealth(float health)
+    private void Start()
     {
-        _slider.maxValue = health;
-        _slider.value = health;
+        _slider.maxValue = _player.MaxHealth;
     }
 
-    public void SetHealth(float health)
+    private void OnEnable()
     {
-        _slider.value = health;
+        _player.OnHealthChanged += ChangingHealth;
+    }
+
+    private void OnDisable()
+    {
+        _player.OnHealthChanged -= ChangingHealth;
+    }
+    //не могу понять что писать в параметре корутины чтобы значение слайдера
+    //менялось на нужное число (-damage или + heal)
+    //из-за этого проблемы с пониманием что делать в цикле
+    private IEnumerator ChangingHealthSlider(float value)
+    {
+        while (true) // не знаю что писать в условии
+        {
+            _slider.value = Mathf.MoveTowards();// и не знаю какие параметры передать сюда
+            yield return null;
+        }        
+    }
+
+    private void ChangingHealth(float value)
+    {
+        StartCoroutine(ChangingHealthSlider(value));
     }
 }
+
+
+
+
+
+
