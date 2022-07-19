@@ -7,34 +7,31 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float _maxHealth = 100;
     [SerializeField] private float _minHealth = 0;
-    [SerializeField] private float _currentHealth;
 
-    private float _healthChangeNumber = 20;
+    private float _currentHealth;
 
-    public event UnityAction<float> OnHealthChanged;
+    public event UnityAction<float> HealthDamage;
+
     public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth;
 
     private void Start()
     {
-        OnHealthChanged?.Invoke(_currentHealth);
+        HealthDamage?.Invoke(_currentHealth);
         _currentHealth = _maxHealth;
     }
-    // игрока кину на кнопки Hurt Heal и передам следующие методы
-    public void ApplyDamage() 
+
+    public void TakeDamage(float damage) 
     {
-        if (_currentHealth > _minHealth)
-        {
-            _currentHealth -= _healthChangeNumber;
-            OnHealthChanged?.Invoke(_currentHealth);
-        }
+        _currentHealth -= damage;
+        _currentHealth = Mathf.Clamp(_currentHealth, _minHealth, _maxHealth);
+        HealthDamage?.Invoke(_currentHealth);
     }
 
-    public void ApllyHeal()
+    public void Heal(float heal)
     {
-        if (_currentHealth < _maxHealth)
-        {
-            _currentHealth += _healthChangeNumber;
-            OnHealthChanged?.Invoke(_currentHealth);
-        }
+        _currentHealth += heal;
+        _currentHealth = Mathf.Clamp(_currentHealth, _minHealth, _maxHealth);
+        HealthDamage?.Invoke(_currentHealth);
     }
 }
