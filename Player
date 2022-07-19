@@ -5,48 +5,36 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private HealthBar _healthBar;
-    
+    [SerializeField] private float _maxHealth = 100;
+    [SerializeField] private float _minHealth = 0;
+    [SerializeField] private float _currentHealth;
 
-    private float _maxHealth = 100;
-    private float _currentHealth;
+    private float _healthChangeNumber = 20;
+
+    public event UnityAction<float> OnHealthChanged;
+    public float MaxHealth => _maxHealth;
 
     private void Start()
     {
+        OnHealthChanged?.Invoke(_currentHealth);
         _currentHealth = _maxHealth;
-        _healthBar.SetMaxHealth(_maxHealth);
     }
-
-    public void OnButtonHurt()
+    // игрока кину на кнопки Hurt Heal и передам следующие методы
+    public void ApplyDamage() 
     {
-        StartCoroutine(ApplyDamage(20));
-    }
-
-    public void OnButtonHeal()
-    {
-        StartCoroutine(ApplyHeal(20));
-    }
-
-    private IEnumerator ApplyDamage(float damage)
-    {        
-        if (_currentHealth > 0)
+        if (_currentHealth > _minHealth)
         {
-            _currentHealth -= damage;
-            _healthBar._slider.value = Mathf.Lerp(_maxHealth, _currentHealth, damage);
-            _healthBar.SetHealth(_currentHealth);
-            yield return null;
-        }        
+            _currentHealth -= _healthChangeNumber;
+            OnHealthChanged?.Invoke(_currentHealth);
+        }
     }
 
-    private IEnumerator ApplyHeal(int heal)
+    public void ApllyHeal()
     {
         if (_currentHealth < _maxHealth)
         {
-            _currentHealth += heal;
-            _healthBar._slider.value = Mathf.Lerp(_maxHealth, _currentHealth, heal);
-            _healthBar.SetHealth(_currentHealth);
-            yield return null;
+            _currentHealth += _healthChangeNumber;
+            OnHealthChanged?.Invoke(_currentHealth);
         }
-        
     }
 }
