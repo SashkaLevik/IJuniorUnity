@@ -8,34 +8,35 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Slider _slider;
     [SerializeField] private Player _player;
+    [SerializeField] private float _speedHealthChange;
+
 
     private void Start()
     {
         _slider.maxValue = _player.MaxHealth;
+        _slider.value = _player.MaxHealth;
     }
 
     private void OnEnable()
     {
-        _player.OnHealthChanged += ChangingHealth;
+        _player.HealthDamage += OnHealthChange;
     }
 
     private void OnDisable()
     {
-        _player.OnHealthChanged -= ChangingHealth;
+        _player.HealthDamage -= OnHealthChange;
     }
-    //не могу понять что писать в параметре корутины чтобы значение слайдера
-    //менялось на нужное число (-damage или + heal)
-    //из-за этого проблемы с пониманием что делать в цикле
-    private IEnumerator ChangingHealthSlider(float value)
+    
+    private IEnumerator ChangingHealthSlider(float target)
     {
-        while (true) // не знаю что писать в условии
+        while (_slider.value != target) 
         {
-            _slider.value = Mathf.MoveTowards();// и не знаю какие параметры передать сюда
+            _slider.value = Mathf.MoveTowards(_player.CurrentHealth, target, _speedHealthChange * Time.deltaTime);
             yield return null;
         }        
     }
 
-    private void ChangingHealth(float value)
+    private void OnHealthChange(float value)
     {
         StartCoroutine(ChangingHealthSlider(value));
     }
