@@ -13,11 +13,9 @@ public class Player : MonoBehaviour
     public event UnityAction<float> HealthDamage;
 
     public float MaxHealth => _maxHealth;
-    public float CurrentHealth => _currentHealth;
 
     private void Start()
     {
-        HealthDamage?.Invoke(_currentHealth);
         _currentHealth = _maxHealth;
     }
 
