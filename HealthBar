@@ -10,7 +10,6 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private float _speedHealthChange;
 
-
     private void Start()
     {
         _slider.maxValue = _player.MaxHealth;
@@ -31,13 +30,13 @@ public class HealthBar : MonoBehaviour
     {
         while (_slider.value != target) 
         {
-            _slider.value = Mathf.MoveTowards(_player.CurrentHealth, target, _speedHealthChange * Time.deltaTime);
+            _slider.value = Mathf.MoveTowards(_slider.value, target, _speedHealthChange * Time.deltaTime);
             yield return null;
         }        
     }
 
     private void OnHealthChange(float value)
-    {
+    {        
         StartCoroutine(ChangingHealthSlider(value));
     }
 }
