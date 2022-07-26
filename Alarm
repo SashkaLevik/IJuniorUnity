@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class Alarm : MonoBehaviour
 {
-    private House _house;
-    private AudioSource _audioSource;
+    [SerializeField] private House _house;
+    [SerializeField] private AudioSource _audioSource;
+
     private float _speedVolumeChange = 0.002f;
     private float _minAlarmVolume = 0;
     private float _maxAlarmVolume = 1;    
