@@ -9,9 +9,9 @@ public class House : MonoBehaviour
 
     public bool IsBreached { get; private set; }
 
-    public event UnityAction Breached
+    public event UnityAction Breached// сказали что сдесь нужно сделать UnityAction<bool>
     {
-        add => _perimeterBreached.AddListener(value);
+        add => _perimeterBreached.AddListener(value);//не знаю что мне тогда передать сюда?
         remove => _perimeterBreached.RemoveListener(value);
     }       
 
