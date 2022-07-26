@@ -10,17 +10,21 @@ public class Alarm : MonoBehaviour
     private float _speedVolumeChange = 0.002f;
     private float _minAlarmVolume = 0;
     private float _maxAlarmVolume = 1;
+    private Coroutine _riseVolume;
+    private Coroutine _reduceVolume;
+
 
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        _audioSource.volume = _speedVolumeChange;
+        _audioSource.volume = _minAlarmVolume;
     }
 
     private void OnEnable()
     {
         _house = GetComponent<House>();
-        _house.Breached += StartRiseVolume;        
+        _house.Breached += StartRiseVolume;
+        _house.Breached += StartReduceVolume;
     }
 
     private void OnDisable()
@@ -31,12 +35,19 @@ public class Alarm : MonoBehaviour
 
     private void StartRiseVolume()
     {
-        StartCoroutine(RiseVolume());
+        if (_house.IsBreached == true)
+        {
+            _riseVolume = StartCoroutine(RiseVolume());
+        }
     }
 
     private void StartReduceVolume()
     {
-        StartCoroutine(ReduceVolume());
+        if (_house.IsBreached == false)
+        {
+            StopCoroutine(RiseVolume());
+        }
+        _reduceVolume = StartCoroutine(ReduceVolume());
     }
 
     private IEnumerator RiseVolume()
