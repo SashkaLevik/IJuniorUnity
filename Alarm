@@ -32,7 +32,7 @@ public class Alarm : MonoBehaviour
         _house.Breached -= StartRiseVolume;
         _house.Breached -= StartReduceVolume;
     }
-
+    // почему не работает так? зачем делать UnityAction<bool> если уже есть IsBreached к которому можно обращаться?
     private void StartRiseVolume()
     {
         if (_house.IsBreached == true)
