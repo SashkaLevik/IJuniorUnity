@@ -9,10 +9,8 @@ public class Alarm : MonoBehaviour
     private AudioSource _audioSource;
     private float _speedVolumeChange = 0.002f;
     private float _minAlarmVolume = 0;
-    private float _maxAlarmVolume = 1;
-    private Coroutine _riseVolume;
-    private Coroutine _reduceVolume;
-
+    private float _maxAlarmVolume = 1;    
+    private Coroutine _changeVolume;
 
     private void Start()
     {
@@ -23,48 +21,33 @@ public class Alarm : MonoBehaviour
     private void OnEnable()
     {
         _house = GetComponent<House>();
-        _house.Breached += StartRiseVolume;
-        _house.Breached += StartReduceVolume;
+        _house.Breached += OnVolumeChange;        
     }
 
     private void OnDisable()
     {
-        _house.Breached -= StartRiseVolume;
-        _house.Breached -= StartReduceVolume;
-    }
-    // почему не работает так? зачем делать UnityAction<bool> если уже есть IsBreached к которому можно обращаться?
-    private void StartRiseVolume()
-    {
-        if (_house.IsBreached == true)
-        {
-            _riseVolume = StartCoroutine(RiseVolume());
-        }
+        _house.Breached -= OnVolumeChange;        
     }
 
-    private void StartReduceVolume()
+    private void OnVolumeChange(bool isBreached)
     {
-        if (_house.IsBreached == false)
+        if(_house.IsBreached == true)
         {
-            StopCoroutine(RiseVolume());
+            _changeVolume = StartCoroutine(ChangeVolume(_maxAlarmVolume));
         }
-        _reduceVolume = StartCoroutine(ReduceVolume());
-    }
-
-    private IEnumerator RiseVolume()
-    {
-        while (_audioSource.volume < 1)
+        else
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxAlarmVolume, _speedVolumeChange);
+            StopCoroutine(ChangeVolume(_maxAlarmVolume));
+            _changeVolume = StartCoroutine(ChangeVolume(_minAlarmVolume));
+        }        
+    }    
+
+    private IEnumerator ChangeVolume(float target)
+    {
+        while (_audioSource.volume != target)
+        {
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, target, _speedVolumeChange);
             yield return null;
         }
-    }
-
-    public IEnumerator ReduceVolume()
-    {
-        while (_audioSource.volume > 0)
-        {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _minAlarmVolume, _speedVolumeChange);
-            yield return null;
-        }
-    }
+    }   
 }
