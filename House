@@ -5,13 +5,13 @@ using UnityEngine.Events;
 
 public class House : MonoBehaviour
 {    
-    [SerializeField] private UnityEvent _perimeterBreached;
+    [SerializeField] private UnityEvent<bool> _perimeterBreached;
 
     public bool IsBreached { get; private set; }
 
-    public event UnityAction Breached// сказали что сдесь нужно сделать UnityAction<bool>
+    public event UnityAction<bool> Breached
     {
-        add => _perimeterBreached.AddListener(value);//не знаю что мне тогда передать сюда?
+        add => _perimeterBreached.AddListener(value);
         remove => _perimeterBreached.RemoveListener(value);
     }       
 
@@ -20,7 +20,7 @@ public class House : MonoBehaviour
         if (collision.TryGetComponent<Thief>(out Thief thief))
         {
             IsBreached = true;
-            _perimeterBreached.Invoke();
+            _perimeterBreached.Invoke(IsBreached);
         }
     }    
 
