@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Uzi : Weapon
+{
+    private int _bulletsCount = 3;
+    
+    public override void Shoot(Transform shootPoint)
+    {
+        StartCoroutine(UziShoot(shootPoint));                
+    }
+
+    private IEnumerator UziShoot(Transform shootPoint)
+    {
+        var fireTime = new WaitForSeconds(0.1f);
+
+        for (int i = 0; i < _bulletsCount; i++)
+        {
+            Instantiate(Bullet, shootPoint.position, Quaternion.identity);
+        }
+        yield return fireTime;
+    }    
+}
